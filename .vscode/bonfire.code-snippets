@@ -1,0 +1,50 @@
+{
+	"Model": {
+		"scope": "dart",
+		"prefix": "model",
+		"description": "Create a Bonfire-style model",
+		"body": [
+			"class ${1:MyModel} {",
+			"  ${1:MyModel}._();",
+			"",
+			"  factory ${1:MyModel}.fromJson(Map<String, dynamic> json) {",
+			"    return ${1:MyModel}._();",
+			"  }",
+			"",
+			"  Map<String, dynamic> toJson() {",
+			"    return {};",
+			"  }",
+			"}"
+		]
+	},
+	"View": {
+		"scope": "dart",
+		"prefix": "view",
+		"description": "Create a Bonfire view with ViewModel",
+		"body": [
+			"import 'package:carpivara/support/view/view.dart';",
+			"import 'package:carpivara/support/view/view_model.dart';",
+			"",
+			"abstract class ${1:MyView}ViewModelProtocol extends ViewModel {}",
+  		"",
+			"class ${1:MyView}View extends View<${1:MyView}ViewModelProtocol> {",
+			"  const ${1:MyView}View({super.key, required super.viewModel});",
+			"",
+			"  @override",
+			"  Widget build(BuildContext context) {",
+			"    return Placeholder();",
+			"  }",
+			"}"
+		]
+	},
+	"ViewModel": {
+		"scope": "dart",
+		"prefix": "vmodel",
+		"description": "Create a Bonfire ViewModel",
+		"body": [
+			"import '${1/([A-Z])/_${1:/downcase}/g}_view.dart';",
+			"",
+			"class ${1:MyView}ViewModel extends ${1:MyView}ViewModelProtocol {}"
+		]
+	}
+}
