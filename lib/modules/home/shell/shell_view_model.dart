@@ -1,11 +1,13 @@
+import 'package:go_router/go_router.dart';
+
 import 'shell_view.dart';
 
 class ShellViewModel extends ShellViewModelProtocol {
   String _destination = '';
 
   @override
-  void didTapTab(int index) {
-    // TODO: implement didTapTab
+  void didTapProfile() {
+    context.go('/shell/profile/details');
   }
 
   @override

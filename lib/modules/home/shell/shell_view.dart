@@ -1,10 +1,11 @@
+import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 import '../components/shell_tab_bar.dart';
 import '../home_factory.dart';
 
 abstract class ShellViewModelProtocol extends ViewModel {
-  void didTapTab(int index);
+  void didTapProfile();
   void updateDestination(String destination);
 }
 
@@ -18,11 +19,26 @@ class ShellView extends View<ShellViewModelProtocol> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('CarPivara'),
-          bottom: PreferredSize(
-            preferredSize: const Size(double.infinity, 44),
+          actions: [
+            InkWell(
+              onTap: viewModel.didTapProfile,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  Constants.avatar,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ],
+          actionsPadding: const EdgeInsets.only(right: 16),
+          bottom: const PreferredSize(
+            preferredSize: Size(double.infinity, 44),
             child: Padding(
-              child: ShellTabBar(onTap: viewModel.didTapTab),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ShellTabBar(),
+              padding: EdgeInsets.symmetric(horizontal: 16),
             ),
           ),
         ),

@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../support/styles/app_colors.dart';
 
 class ShellTabBar extends StatelessWidget {
-  final void Function(int index) onTap;
-
-  const ShellTabBar({super.key, required this.onTap});
+  const ShellTabBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +13,15 @@ class ShellTabBar extends StatelessWidget {
         border: Border.all(color: AppColors.gray30),
         borderRadius: const BorderRadius.all(Radius.circular(8)),
       ),
-      child: TabBar(
+      child: const TabBar(
         dividerHeight: 0,
-        onTap: onTap,
         indicatorSize: TabBarIndicatorSize.tab,
         unselectedLabelColor: AppColors.lightGray,
-        indicator: const BoxDecoration(
+        indicator: BoxDecoration(
           color: AppColors.gray30,
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
-        tabs: const [
+        tabs: [
           Tab(child: Text('Vou dirigir')),
           Tab(child: Text('Quero carona')),
         ],
