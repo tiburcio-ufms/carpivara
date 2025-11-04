@@ -1,23 +1,35 @@
 class Review {
+  int? id;
   int userId;
   int rideId;
   int rating;
+  String? comment;
 
-  Review({required this.userId, required this.rideId, required this.rating});
+  Review({
+    this.id,
+    required this.userId,
+    required this.rideId,
+    required this.rating,
+    this.comment,
+  });
 
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
-      userId: json['userId'],
-      rideId: json['rideId'],
+      id: json['id'],
+      userId: json['user_id'],
+      rideId: json['ride_id'],
       rating: json['rating'],
+      comment: json['comment'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
-      'rideId': rideId,
+      if (id != null) 'id': id,
+      'user_id': userId,
+      'ride_id': rideId,
       'rating': rating,
+      if (comment != null) 'comment': comment,
     };
   }
 }
