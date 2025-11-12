@@ -1,9 +1,13 @@
+import '../../../models/user.dart';
 import '../../../support/styles/app_colors.dart';
 import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 
 class DriverTile extends StatelessWidget {
-  const DriverTile({super.key});
+  final User driver;
+  final VoidCallback? onRequest;
+
+  const DriverTile({super.key, this.onRequest, required this.driver});
 
   @override
   Widget build(BuildContext context) {
@@ -19,22 +23,37 @@ class DriverTile extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.network(
-              Constants.avatar,
+              driver.profilePic.isNotEmpty ? driver.profilePic : Constants.avatar,
               width: 40,
               height: 40,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.network(Constants.avatar, width: 40, height: 40, fit: BoxFit.cover);
+              },
             ),
           ),
-          const Column(
-            spacing: 4,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('João da Silva'),
-              Text('HB20 Branca PXV4A34'),
-            ],
+          Expanded(
+            child: Column(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(driver.name),
+                if (driver.carModel != null && driver.carPlate != null)
+                  Text('${driver.carModel} ${driver.carPlate}')
+                else
+                  Text('${driver.course} - ${driver.semester}'),
+                Row(
+                  spacing: 4,
+                  children: [
+                    const Icon(Icons.star, size: 16, color: Colors.amber),
+                    Text('${driver.rating} (${driver.ridesAsDriver})'),
+                  ],
+                ),
+              ],
+            ),
           ),
           OutlinedButton(
-            onPressed: () {},
+            onPressed: onRequest,
             child: const Text('Solicitar'),
           ),
         ],

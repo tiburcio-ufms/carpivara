@@ -7,9 +7,13 @@ abstract class ServiceProtocol {
   Future<Result> createAddress(dynamic body);
   Future<Result> updateAddress(String id, dynamic body);
 
-  Future<Result> getRides();
+  Future<Result> getRides({Map<String, dynamic>? queryParameters});
   Future<Result> acceptRide(String id);
   Future<Result> searchRide(dynamic body);
+  Future<Result> searchDrivers(dynamic body);
+  Future<Result> createRide(dynamic body);
+  Future<Result> cancelRide(String id);
+  Future<Result> finishRide(String id);
   Future<Result> reviewRide(String id, dynamic body);
 
   Future<Result> signIn(dynamic body);
@@ -82,6 +86,46 @@ class ApiService extends ServiceProtocol {
   }
 
   @override
+  Future<Result> searchDrivers(dynamic body) async {
+    try {
+      final response = await _client.post('/drivers/search', body);
+      return response;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
+  @override
+  Future<Result> createRide(dynamic body) async {
+    try {
+      final response = await _client.post('/rides', body);
+      return response;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
+  @override
+  Future<Result> cancelRide(String id) async {
+    try {
+      final response = await _client.delete('/rides/$id');
+      return response;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
+  @override
+  Future<Result> finishRide(String id) async {
+    try {
+      final response = await _client.post('/rides/$id/finish', {});
+      return response;
+    } on Exception catch (error) {
+      return Result.error(error);
+    }
+  }
+
+  @override
   Future<Result> acceptRide(String id) async {
     try {
       final response = await _client.post('/rides/$id/accept', {});
@@ -102,9 +146,9 @@ class ApiService extends ServiceProtocol {
   }
 
   @override
-  Future<Result> getRides() async {
+  Future<Result> getRides({Map<String, dynamic>? queryParameters}) async {
     try {
-      final response = await _client.get('/rides');
+      final response = await _client.get('/rides', queryParameters: queryParameters);
       return response;
     } on Exception catch (error) {
       return Result.error(error);

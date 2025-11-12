@@ -6,7 +6,6 @@ import '../home_factory.dart';
 
 abstract class ShellViewModelProtocol extends ViewModel {
   void didTapProfile();
-  void updateDestination(String destination);
 }
 
 class ShellView extends View<ShellViewModelProtocol> {
@@ -35,14 +34,15 @@ class ShellView extends View<ShellViewModelProtocol> {
           ],
           actionsPadding: const EdgeInsets.only(right: 16),
           bottom: const PreferredSize(
-            preferredSize: Size(double.infinity, 44),
+            preferredSize: Size(double.infinity, 60),
             child: Padding(
               child: ShellTabBar(),
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
             ),
           ),
         ),
         body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             HomeFactory.driver(context),
             HomeFactory.passenger(context),

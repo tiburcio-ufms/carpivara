@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'result.dart';
 
 abstract class ApiClientProtocol {
-  Future<Result> get(String path);
+  Future<Result> get(String path, {Map<String, dynamic>? queryParameters});
   Future<Result> post(String path, dynamic body);
   Future<Result> put(String path, dynamic body);
   Future<Result> delete(String path);
@@ -17,9 +17,9 @@ class ApiClient extends ApiClientProtocol {
     ..options.contentType = ContentType.json.value;
 
   @override
-  Future<Result> get(String path) async {
+  Future<Result> get(String path, {Map<String, dynamic>? queryParameters}) async {
     try {
-      final response = await _client.get(path);
+      final response = await _client.get(path, queryParameters: queryParameters);
       return Result.ok(response);
     } on DioException catch (error) {
       return Result.error(error);

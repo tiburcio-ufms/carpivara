@@ -1,8 +1,8 @@
 import 'user.dart';
 
 class Session {
-  String token;
   User user;
+  String token;
 
   Session({required this.token, required this.user});
 
@@ -20,4 +20,3 @@ class Session {
     };
   }
 }
-

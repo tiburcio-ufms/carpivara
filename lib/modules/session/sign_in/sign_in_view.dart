@@ -4,6 +4,9 @@ import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 
 abstract class SignInViewModelProtocol extends ViewModel {
+  String? get passportError;
+  String? get passwordError;
+
   void didTapSignIn();
   void updatePassport(String passport);
   void updatePassword(String password);
@@ -11,6 +14,11 @@ abstract class SignInViewModelProtocol extends ViewModel {
 
 class SignInView extends View<SignInViewModelProtocol> {
   const SignInView({super.key, required super.viewModel});
+
+  Widget get _actionWidget {
+    if (!viewModel.isLoading) return const Text('Entrar');
+    return const CircularProgressIndicator(padding: EdgeInsets.symmetric(vertical: 8));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +41,21 @@ class SignInView extends View<SignInViewModelProtocol> {
               const Spacer(),
               const Text('Passaporte UFMS'),
               TextFormField(
+                keyboardType: TextInputType.number,
                 onChanged: viewModel.updatePassport,
-                decoration: const InputDecoration(hintText: '0000.0000.000-0'),
+                decoration: InputDecoration(hintText: '000000000000', errorText: viewModel.passportError),
               ),
               const SizedBox(height: 16),
               const Text('Senha'),
               TextFormField(
                 obscureText: true,
                 onChanged: viewModel.updatePassword,
-                decoration: const InputDecoration(hintText: '************'),
+                decoration: InputDecoration(hintText: '************', errorText: viewModel.passwordError),
               ),
               const SizedBox(height: 56),
               ElevatedButton(
+                child: _actionWidget,
                 onPressed: viewModel.didTapSignIn,
-                child: const Text('Entrar'),
               ),
               const Spacer(flex: 3),
             ],

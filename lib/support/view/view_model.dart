@@ -1,19 +1,36 @@
 import 'package:flutter/widgets.dart';
 
-abstract class ViewModel extends ChangeNotifier {
-  bool _isLoading = false;
-  late BuildContext _context;
+typedef RenderDialog = Future<T?> Function<T>(Widget dialog);
+typedef RenderFailure = void Function(String message);
 
-  bool get isLoading => _isLoading;
-  BuildContext get context => _context;
+abstract class ViewModel extends ChangeNotifier {
+  bool? _isLoading;
+  BuildContext? _context;
+  RenderDialog? _renderDialog;
+  RenderFailure? _renderFailure;
+
+  bool get isLoading => _isLoading ?? false;
+  BuildContext? get context => _context;
+  RenderDialog? get renderDialog => _renderDialog;
+  RenderFailure? get renderFailure => _renderFailure;
 
   void setIsLoading(bool isLoading) {
     _isLoading = isLoading;
     notifyListeners();
   }
 
-  void setContext(BuildContext context) {
+  void setContext(BuildContext? context) {
     _context = context;
+    notifyListeners();
+  }
+
+  void setRenderDialog(RenderDialog renderDialog) {
+    _renderDialog = renderDialog;
+    notifyListeners();
+  }
+
+  void setRenderFailure(void Function(String message) renderFailure) {
+    _renderFailure = renderFailure;
     notifyListeners();
   }
 }

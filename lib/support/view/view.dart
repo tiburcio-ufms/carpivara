@@ -30,15 +30,8 @@ class _ViewState extends State<View> {
   @override
   void initState() {
     super.initState();
-    widget.viewModel.setContext(context);
+    _bind();
     widget.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.dispose();
-    unawaited(container.unregister(widget.viewModel));
   }
 
   @override
@@ -49,5 +42,23 @@ class _ViewState extends State<View> {
         return widget.build(context);
       },
     );
+  }
+
+  @override
+  void dispose() {
+    widget.dispose();
+    widget.viewModel.setContext(null);
+    unawaited(container.unregister(widget.viewModel));
+    super.dispose();
+  }
+
+  void _bind() {
+    widget.viewModel.setContext(context);
+    widget.viewModel.setRenderDialog(<T>(dialog) {
+      return showDialog<T>(context: context, builder: (_) => dialog);
+    });
+    widget.viewModel.setRenderFailure((message) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    });
   }
 }
