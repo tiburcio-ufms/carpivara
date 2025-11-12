@@ -12,8 +12,8 @@ class HistoryViewModel extends HistoryViewModelProtocol {
   HistoryViewModel({
     required SessionManagerProtocol sessionManager,
     required RideRepositoryProtocol rideRepository,
-  })  : _sessionManager = sessionManager,
-        _rideRepository = rideRepository {
+  }) : _sessionManager = sessionManager,
+       _rideRepository = rideRepository {
     _loadRides();
   }
 
@@ -26,7 +26,7 @@ class HistoryViewModel extends HistoryViewModelProtocol {
     switch (result) {
       case Ok(:final value):
         final user = _sessionManager.session!.user;
-        _rides = value.where((ride) => ride.driverId == user.id || ride.passengerId == user.id).toList();
+        _rides = value.where((ride) => ride.driver?.id == user.id || ride.passenger.id == user.id).toList();
         _rides.sort((a, b) => b.requestDate.compareTo(a.requestDate));
         notifyListeners();
       case Error(:final error):

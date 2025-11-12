@@ -72,8 +72,16 @@ class PassengerViewModel extends PassengerViewModelProtocol {
   @override
   void onMapReady(GoogleMapController controller) {
     _mapController = controller;
-    if (_route != null && _mapController != null) {
+    _updateCameraIfNeeded();
+  }
+
+  void _updateCameraIfNeeded() {
+    if (_mapController == null || _route == null) return;
+    try {
       _mapController!.animateCamera(CameraUpdate.newLatLngBounds(_route!.bounds, 75));
+    } on Exception catch (_) {
+      // Controller foi descartado, ignorar
+      _mapController = null;
     }
   }
 
@@ -183,6 +191,8 @@ class PassengerViewModel extends PassengerViewModelProtocol {
   @override
   void dispose() {
     _rideStatusTimer?.cancel();
+    _mapController?.dispose();
+    _mapController = null;
     super.dispose();
   }
 
@@ -201,7 +211,7 @@ class PassengerViewModel extends PassengerViewModelProtocol {
         case Ok(:final value):
           _route = value;
           notifyListeners();
-          if (_mapController != null) _mapController!.animateCamera(CameraUpdate.newLatLngBounds(value.bounds, 75));
+          _updateCameraIfNeeded();
         case Error():
           break;
       }

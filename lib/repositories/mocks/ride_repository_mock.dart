@@ -56,7 +56,6 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     return [
       Ride(
         id: 1,
-        driverId: 1,
         driver: driverData[1] != null
             ? User(
                 id: 1,
@@ -104,12 +103,10 @@ class RideRepositoryMock implements RideRepositoryProtocol {
           ),
         ],
         requestDate: DateTime.now().subtract(const Duration(hours: 2)),
-        passenger: passengerData[4], // Pedro Oliveira solicitou esta corrida
-        passengerId: 4,
+        passenger: passengerData[4]!, // Pedro Oliveira solicitou esta corrida
       ),
       Ride(
         id: 2,
-        driverId: 2,
         driver: driverData[2] != null
             ? User(
                 id: 2,
@@ -126,8 +123,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
                 carPlate: driverData[2]!['carPlate'] as String,
               )
             : null,
-        passengerId: 1,
-        passenger: passengerData[5], // Juliana Ferreira
+        passenger: passengerData[5]!, // Juliana Ferreira
         addresses: [
           Address(
             userId: 2,
@@ -165,7 +161,6 @@ class RideRepositoryMock implements RideRepositoryProtocol {
       ),
       Ride(
         id: 3,
-        driverId: 3,
         driver: driverData[3] != null
             ? User(
                 id: 3,
@@ -213,12 +208,10 @@ class RideRepositoryMock implements RideRepositoryProtocol {
           ),
         ],
         requestDate: DateTime.now().subtract(const Duration(minutes: 30)),
-        passenger: passengerData[6], // Carlos Mendes solicitou esta corrida
-        passengerId: 6,
+        passenger: passengerData[6]!, // Carlos Mendes solicitou esta corrida
       ),
       Ride(
         id: 4,
-        driverId: 1,
         driver: driverData[1] != null
             ? User(
                 id: 1,
@@ -252,8 +245,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
           ),
         ],
         requestDate: DateTime.now().subtract(const Duration(minutes: 10)),
-        passenger: passengerData[5], // Juliana Ferreira solicitou esta corrida
-        passengerId: 5,
+        passenger: passengerData[5]!, // Juliana Ferreira solicitou esta corrida
       ),
     ];
   }
@@ -277,12 +269,12 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     // Filtrar por driver_id se fornecido
     if (queryParameters?['driver_id'] != null) {
       final driverId = queryParameters!['driver_id'] as int;
-      filteredRides = filteredRides.where((ride) => ride.driverId == driverId).toList();
+      filteredRides = filteredRides.where((ride) => ride.driver?.id == driverId).toList();
     }
 
     // Filtrar por only_woman se fornecido
     if (queryParameters?['only_woman'] == true) {
-      filteredRides = filteredRides.where((ride) => ride.passenger?.isWoman ?? false).toList();
+      filteredRides = filteredRides.where((ride) => ride.passenger.isWoman).toList();
     }
 
     return Result.ok(filteredRides);
@@ -291,18 +283,9 @@ class RideRepositoryMock implements RideRepositoryProtocol {
   @override
   Future<Result<List<Ride>>> searchRide(Map<String, dynamic> searchParams) async {
     await _simulateNetworkDelay();
+    final rides = _rides.where((ride) => ride.driver == null).toList();
 
-    final origin = searchParams['origin'] as String?;
-    final destination = searchParams['destination'] as String?;
-
-    if (origin == null && destination == null) {
-      final availableRides = _rides.where((ride) => ride.passengerId == null).toList();
-      return Result.ok(availableRides);
-    }
-
-    final filteredRides = _rides.where((ride) => ride.passengerId == null).toList();
-
-    return Result.ok(filteredRides);
+    return Result.ok(rides);
   }
 
   // Dados mockados realistas para os motoristas
@@ -354,10 +337,9 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     final onlyWoman = searchParams['only_woman'] as bool? ?? false;
     final driverData = _getDriverData();
 
-    // Mock de motoristas disponíveis baseados nos driverIds das corridas sem passageiro
     final availableDriverIds = _rides
-        .where((ride) => ride.passengerId == null)
-        .map((ride) => ride.driverId)
+        .where((ride) => ride.driver != null)
+        .map((ride) => ride.driver!.id)
         .toSet()
         .toList();
 
@@ -400,9 +382,46 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     final addressesData = rideData['addresses'] as List<dynamic>;
     final addresses = addressesData.map((json) => Address.fromJson(json as Map<String, dynamic>)).toList();
 
+    // Buscar dados do motorista
+    final driverData = _getDriverData();
+    final driverInfo = driverData[driverId];
+    final driver = driverInfo != null
+        ? User(
+            id: driverId,
+            passport: driverInfo['passport'] as String,
+            name: driverInfo['name'] as String,
+            course: driverInfo['course'] as String,
+            profilePic: '',
+            rating: driverInfo['rating'] as String,
+            ridesAsDriver: driverInfo['ridesAsDriver'] as String,
+            ridesAsPassenger: driverInfo['ridesAsPassenger'] as String,
+            semester: driverInfo['semester'] as String,
+            isWoman: driverInfo['isWoman'] as bool,
+            carModel: driverInfo['carModel'] as String,
+            carPlate: driverInfo['carPlate'] as String,
+          )
+        : null;
+
+    final passengerData = _getPassengerData();
+    final passenger =
+        passengerData[4] ??
+        User(
+          id: 1,
+          passport: '',
+          name: 'Usuário',
+          course: '',
+          profilePic: '',
+          rating: '0',
+          ridesAsDriver: '0',
+          ridesAsPassenger: '0',
+          semester: '',
+          isWoman: false,
+        );
+
     final newRide = Ride(
       id: _rides.length + 1,
-      driverId: driverId,
+      driver: driver,
+      passenger: passenger,
       addresses: addresses,
       requestDate: DateTime.now(),
     );
@@ -433,28 +452,9 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     }
 
     final ride = _rides[rideIndex];
-    final driverData = _getDriverData();
-    final driver = driverData[ride.driverId];
     final acceptedRide = Ride(
       id: ride.id,
-      driverId: ride.driverId,
-      driver: driver != null
-          ? User(
-              id: ride.driverId,
-              passport: driver['passport'] as String,
-              name: driver['name'] as String,
-              course: driver['course'] as String,
-              profilePic: '',
-              rating: driver['rating'] as String,
-              ridesAsDriver: driver['ridesAsDriver'] as String,
-              ridesAsPassenger: driver['ridesAsPassenger'] as String,
-              semester: driver['semester'] as String,
-              isWoman: driver['isWoman'] as bool,
-              carModel: driver['carModel'] as String,
-              carPlate: driver['carPlate'] as String,
-            )
-          : null,
-      passengerId: ride.passengerId ?? 1,
+      driver: ride.driver,
       passenger: ride.passenger,
       addresses: ride.addresses,
       requestDate: ride.requestDate,
@@ -479,9 +479,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
     final ride = _rides[rideIndex];
     final finishedRide = Ride(
       id: ride.id,
-      driverId: ride.driverId,
       driver: ride.driver,
-      passengerId: ride.passengerId,
       passenger: ride.passenger,
       addresses: ride.addresses,
       requestDate: ride.requestDate,

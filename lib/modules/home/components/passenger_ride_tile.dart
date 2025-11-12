@@ -38,8 +38,8 @@ class PassengerRideTile extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  ride.passenger?.profilePic.isNotEmpty ?? false
-                      ? ride.passenger!.profilePic
+                  ride.passenger.profilePic.isNotEmpty
+                      ? ride.passenger.profilePic
                       : Constants.avatar,
                   width: 40,
                   height: 40,
@@ -60,16 +60,15 @@ class PassengerRideTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ride.passenger?.name ?? 'Passageiro',
+                      ride.passenger.name,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    if (ride.passenger != null)
-                      Text('${ride.passenger!.course} - ${ride.passenger!.semester}'),
+                    Text('${ride.passenger.course} - ${ride.passenger.semester}'),
                     Row(
                       spacing: 4,
                       children: [
                         const Icon(Icons.star, size: 16, color: Colors.amber),
-                        Text('${ride.passenger?.rating ?? "N/A"} (${ride.passenger?.ridesAsPassenger ?? "0"})'),
+                        Text('${ride.passenger.rating} (${ride.passenger.ridesAsPassenger})'),
                       ],
                     ),
                   ],

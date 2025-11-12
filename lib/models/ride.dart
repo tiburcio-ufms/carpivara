@@ -3,10 +3,8 @@ import 'user.dart';
 
 class Ride {
   int? id;
-  int driverId;
   User? driver;
-  int? passengerId;
-  User? passenger;
+  User passenger;
   List<Address> addresses;
   DateTime requestDate;
   DateTime? confirmationDate;
@@ -15,10 +13,8 @@ class Ride {
 
   Ride({
     this.id,
-    required this.driverId,
     this.driver,
-    this.passengerId,
-    this.passenger,
+    required this.passenger,
     required this.addresses,
     required this.requestDate,
     this.confirmationDate,
@@ -29,10 +25,8 @@ class Ride {
   factory Ride.fromJson(Map<String, dynamic> json) {
     return Ride(
       id: json['id'],
-      driverId: json['driver_id'],
-      driver: json['driver'] != null ? User.fromJson(json['driver'] as Map<String, dynamic>) : null,
-      passengerId: json['passenger_id'],
-      passenger: json['passenger'] != null ? User.fromJson(json['passenger'] as Map<String, dynamic>) : null,
+      driver: User.fromJson(json['driver'] as Map<String, dynamic>),
+      passenger: User.fromJson(json['passenger'] as Map<String, dynamic>),
       addresses:
           (json['addresses'] as List<dynamic>?)
               ?.map((address) => Address.fromJson(address as Map<String, dynamic>))
@@ -48,10 +42,8 @@ class Ride {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'driver_id': driverId,
       if (driver != null) 'driver': driver!.toJson(),
-      if (passengerId != null) 'passenger_id': passengerId,
-      if (passenger != null) 'passenger': passenger!.toJson(),
+      'passenger': passenger.toJson(),
       'addresses': addresses.map((address) => address.toJson()).toList(),
       'request_date': requestDate.toIso8601String(),
       if (confirmationDate != null) 'confirmation_date': confirmationDate!.toIso8601String(),

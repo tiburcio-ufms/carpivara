@@ -101,10 +101,16 @@ class _MapsViewState extends State<MapsView> {
 
   void _updateCameraForRoute() {
     if (_mapController == null || widget.route == null) return;
-    _mapController!.animateCamera(CameraUpdate.newLatLngBounds(widget.route!.bounds, 75));
+    try {
+      _mapController!.animateCamera(CameraUpdate.newLatLngBounds(widget.route!.bounds, 75));
+    } on Exception catch (_) {
+      // Controller foi descartado, ignorar
+      _mapController = null;
+    }
   }
 
   void _adjustCameraToDestination(LatLng origin, LatLng destination) {
+    if (_mapController == null) return;
     final minLat = origin.latitude < destination.latitude ? origin.latitude : destination.latitude;
     final maxLat = origin.latitude > destination.latitude ? origin.latitude : destination.latitude;
     final minLng = origin.longitude < destination.longitude ? origin.longitude : destination.longitude;
@@ -113,7 +119,12 @@ class _MapsViewState extends State<MapsView> {
       southwest: LatLng(minLat, minLng),
       northeast: LatLng(maxLat, maxLng),
     );
-    _mapController?.animateCamera(CameraUpdate.newLatLngBounds(bounds, 75));
+    try {
+      _mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 75));
+    } on Exception catch (_) {
+      // Controller foi descartado, ignorar
+      _mapController = null;
+    }
   }
 
   @override
@@ -175,6 +186,7 @@ class _MapsViewState extends State<MapsView> {
   @override
   void dispose() {
     _mapController?.dispose();
+    _mapController = null;
     super.dispose();
   }
 }

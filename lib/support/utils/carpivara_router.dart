@@ -23,6 +23,7 @@ class CarpivaraRouter {
         builder: HomeFactory.shell,
         routes: <RouteBase>[
           GoRoute(path: '/live', builder: RideFactory.live),
+          GoRoute(path: '/review', builder: RideFactory.review),
           GoRoute(path: '/profile/details', builder: ProfileFactory.details),
           GoRoute(path: '/profile/history', builder: ProfileFactory.history),
         ],

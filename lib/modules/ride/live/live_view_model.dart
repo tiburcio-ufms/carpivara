@@ -88,18 +88,29 @@ class LiveViewModel extends LiveViewModelProtocol {
   @override
   void onMapReady(GoogleMapController controller) {
     _mapController = controller;
-    if (_isNavigationMode && _currentUserLocation != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: _currentUserLocation!,
-            zoom: 17,
-            tilt: 45,
+    _updateCameraIfNeeded();
+  }
+
+  void _updateCameraIfNeeded() {
+    if (_mapController == null) return;
+    
+    try {
+      if (_isNavigationMode && _currentUserLocation != null) {
+        _mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: _currentUserLocation!,
+              zoom: 17,
+              tilt: 45,
+            ),
           ),
-        ),
-      );
-    } else if (_route != null && _mapController != null) {
-      _mapController!.animateCamera(CameraUpdate.newLatLngBounds(_route!.bounds, 75));
+        );
+      } else if (_route != null) {
+        _mapController!.animateCamera(CameraUpdate.newLatLngBounds(_route!.bounds, 75));
+      }
+    } on Exception catch (_) {
+      // Controller foi descartado, ignorar
+      _mapController = null;
     }
   }
 
@@ -112,9 +123,7 @@ class LiveViewModel extends LiveViewModelProtocol {
       _startLocationTracking();
     } else {
       _stopLocationTracking();
-      if (_route != null && _mapController != null) {
-        _mapController!.animateCamera(CameraUpdate.newLatLngBounds(_route!.bounds, 75));
-      }
+      _updateCameraIfNeeded();
     }
   }
 
@@ -127,11 +136,11 @@ class LiveViewModel extends LiveViewModelProtocol {
     setIsLoading(false);
 
     switch (result) {
-      case Ok():
+      case Ok(:final value):
         _rideStatusTimer?.cancel();
         _currentRide = null;
         notifyListeners();
-        context?.go('/shell');
+        context?.go('/shell/review', extra: value);
       case Error(:final error):
         renderFailure?.call(error.toString());
     }
@@ -161,6 +170,8 @@ class LiveViewModel extends LiveViewModelProtocol {
     _rideStatusTimer?.cancel();
     _locationUpdateTimer?.cancel();
     _positionStream?.cancel();
+    _mapController?.dispose();
+    _mapController = null;
     super.dispose();
   }
 
@@ -174,19 +185,14 @@ class LiveViewModel extends LiveViewModelProtocol {
       case Ok(:final value):
         final activeRide = value.firstWhere(
           (ride) =>
-              (ride.driverId == currentUser.id || ride.passengerId == currentUser.id) &&
+              (ride.driver?.id == currentUser.id || ride.passenger.id == currentUser.id) &&
               ride.confirmationDate != null &&
-              ride.endDate == null,
-          orElse: () => Ride(
-            driverId: 0,
-            addresses: [],
-            requestDate: DateTime.now(),
-          ),
+              ride.endDate == null
         );
 
         if (activeRide.id != null) {
           _currentRide = activeRide;
-          _isDriver = activeRide.driverId == currentUser.id;
+          _isDriver = activeRide.driver?.id == currentUser.id;
           notifyListeners();
           await _loadRoute();
           _startRideStatusPolling();
@@ -217,7 +223,7 @@ class LiveViewModel extends LiveViewModelProtocol {
         case Ok(:final value):
           _route = value;
           notifyListeners();
-          if (_mapController != null) _mapController!.animateCamera(CameraUpdate.newLatLngBounds(value.bounds, 75));
+          _updateCameraIfNeeded();
         case Error():
           break;
       }
@@ -247,7 +253,7 @@ class LiveViewModel extends LiveViewModelProtocol {
             timer.cancel();
             _currentRide = null;
             notifyListeners();
-            context?.go('/shell');
+            context?.go('/shell/review', extra: updatedRide);
           } else {
             _currentRide = updatedRide;
             notifyListeners();
@@ -266,7 +272,7 @@ class LiveViewModel extends LiveViewModelProtocol {
     }
 
     _currentRide = ride;
-    _isDriver = ride.driverId == currentUser.id;
+    _isDriver = ride.driver?.id == currentUser.id;
     notifyListeners();
     _loadRoute();
     _startRideStatusPolling();
@@ -285,16 +291,22 @@ class LiveViewModel extends LiveViewModelProtocol {
         _currentUserLocation = LatLng(position.latitude, position.longitude);
 
         if (_isNavigationMode && _mapController != null) {
-          _mapController!.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: _currentUserLocation!,
-                zoom: 17,
-                tilt: 45,
-                bearing: position.heading,
+          try {
+            _mapController!.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  target: _currentUserLocation!,
+                  zoom: 17,
+                  tilt: 45,
+                  bearing: position.heading,
+                ),
               ),
-            ),
-          );
+            );
+          } on Exception catch (_) {
+            // Controller foi descartado, parar tracking
+            _positionStream?.cancel();
+            _mapController = null;
+          }
         }
 
         _locationUpdateTimer?.cancel();
@@ -328,6 +340,7 @@ class LiveViewModel extends LiveViewModelProtocol {
       case Ok(:final value):
         _route = value;
         notifyListeners();
+        _updateCameraIfNeeded();
       case Error():
         break;
     }
