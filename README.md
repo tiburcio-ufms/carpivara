@@ -102,13 +102,35 @@ git clone git@github.com:tiburcio-ufms/carpivara.git
 cd carpivara
 ```
 
-### 2. Instale as dependências
+### 2. Configure as API Keys
+
+⚠️ **Importante:** Antes de executar o projeto, você precisa configurar as API keys do Google Maps.
+
+1. Copie o arquivo de exemplo:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edite o arquivo `.env` e adicione suas chaves de API:
+   ```env
+   GOOGLE_MAPS_API_KEY=sua_chave_aqui
+   GOOGLE_PLACES_API_KEY=sua_chave_aqui
+   ```
+
+3. Configure as plataformas nativas:
+   ```bash
+   ./scripts/setup_env.sh
+   ```
+
+📖 Para mais detalhes, consulte o guia completo: [CONFIGURACAO_API_KEYS.md](CONFIGURACAO_API_KEYS.md)
+
+### 3. Instale as dependências
 
 ```bash
 flutter pub get
 ```
 
-### 3. Configure um dispositivo
+### 4. Configure um dispositivo
 
 #### Opção A: Emulador Android
 
@@ -122,7 +144,7 @@ flutter pub get
 2. Ative a **Depuração USB** nas opções de desenvolvedor
 3. Autorize o computador no dispositivo
 
-### 4. Verifique os dispositivos disponíveis
+### 5. Verifique os dispositivos disponíveis
 
 ```bash
 flutter devices
@@ -130,7 +152,7 @@ flutter devices
 
 Você deve ver seu dispositivo ou emulador listado.
 
-### 5. Execute o aplicativo
+### 6. Execute o aplicativo
 
 ```bash
 flutter run

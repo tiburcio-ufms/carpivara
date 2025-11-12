@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../support/config/env_config.dart';
 import '../support/utils/result.dart';
 
 abstract class PlacesServiceProtocol {
@@ -10,8 +11,9 @@ abstract class PlacesServiceProtocol {
 
 class PlacesService implements PlacesServiceProtocol {
   static const String _baseUrl = 'https://maps.googleapis.com/maps/api/place';
-  static const String _apiKey = 'AIzaSyBR0fyzdC-LoyKLturAnnJynPrGOStwW6s';
   final Dio _dio = Dio();
+
+  String get _apiKey => EnvConfig.googlePlacesApiKey;
 
   @override
   Future<Result> getPlacePredictions(String query) async {
