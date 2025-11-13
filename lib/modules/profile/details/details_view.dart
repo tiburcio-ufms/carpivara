@@ -144,16 +144,6 @@ class DetailsView extends View<DetailsViewModelProtocol> {
                   children: [
                     Text('Configurações', style: TextTheme.of(context).bodyLarge),
                     InkWell(
-                      onTap: viewModel.didTapPreferences,
-                      child: const Row(
-                        spacing: 12,
-                        children: [
-                          Icon(Icons.settings_outlined),
-                          Text('Preferências de carona'),
-                        ],
-                      ),
-                    ),
-                    InkWell(
                       onTap: viewModel.didTapHistory,
                       child: const Row(
                         spacing: 12,
