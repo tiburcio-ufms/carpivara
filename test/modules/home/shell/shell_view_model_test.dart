@@ -1,12 +1,14 @@
 import 'package:carpivara/modules/home/shell/shell_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../../ride/live/live_view_model_test.dart';
+
 void main() {
   group('ShellViewModel', () {
     late ShellViewModel viewModel;
 
     setUp(() {
-      viewModel = ShellViewModel();
+      viewModel = ShellViewModel(sessionManager: MockSessionManager());
     });
 
     tearDown(() {

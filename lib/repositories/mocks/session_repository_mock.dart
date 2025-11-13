@@ -27,7 +27,7 @@ class SessionRepositoryMock implements SessionRepositoryProtocol {
       name: 'Camila Ribeiro',
       passport: passport,
       course: 'Sistemas de Informação',
-      profilePic: '/assets/woman_avatar_1.png',
+      profilePic: 'assets/woman_avatar_1.png',
       rating: '4.8',
       ridesAsDriver: '12',
       ridesAsPassenger: '24',
