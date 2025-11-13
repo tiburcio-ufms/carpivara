@@ -1,10 +1,11 @@
-import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 import '../components/shell_tab_bar.dart';
 import '../home_factory.dart';
 
 abstract class ShellViewModelProtocol extends ViewModel {
+  String get profilePic;
+
   void didTapProfile();
 }
 
@@ -24,7 +25,7 @@ class ShellView extends View<ShellViewModelProtocol> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  Constants.avatar,
+                  viewModel.profilePic,
                   width: 32,
                   height: 32,
                   fit: BoxFit.cover,

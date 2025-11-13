@@ -2,7 +2,6 @@ import 'dart:async';
 
 import '../../models/session.dart';
 import '../../models/user.dart';
-import '../../support/utils/constants.dart';
 import '../../support/utils/result.dart';
 import '../session_repository.dart';
 
@@ -28,7 +27,7 @@ class SessionRepositoryMock implements SessionRepositoryProtocol {
       name: 'Camila Ribeiro',
       passport: passport,
       course: 'Sistemas de Informação',
-      profilePic: Constants.avatar,
+      profilePic: '/assets/woman_avatar_1.png',
       rating: '4.8',
       ridesAsDriver: '12',
       ridesAsPassenger: '24',

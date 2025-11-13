@@ -37,7 +37,8 @@ class HomeFactory {
   }
 
   static Widget shell(BuildContext context, GoRouterState state) {
-    final viewModel = ShellViewModel();
+    final sessionManager = SessionManager.instance;
+    final viewModel = ShellViewModel(sessionManager: sessionManager);
     return ShellView(viewModel: container.register(viewModel));
   }
 }

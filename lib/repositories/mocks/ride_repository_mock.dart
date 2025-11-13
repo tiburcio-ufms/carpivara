@@ -16,7 +16,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         passport: '2021004567',
         name: 'Pedro Oliveira',
         course: 'Administração',
-        profilePic: '',
+        profilePic: '/assets/man_avatar_1.png',
         rating: '4.6',
         ridesAsDriver: '5',
         ridesAsPassenger: '28',
@@ -28,7 +28,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         passport: '2021005678',
         name: 'Juliana Ferreira',
         course: 'Psicologia',
-        profilePic: '',
+        profilePic: '/assets/woman_avatar_2.png',
         rating: '4.9',
         ridesAsDriver: '12',
         ridesAsPassenger: '45',
@@ -40,7 +40,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         passport: '2021006789',
         name: 'Carlos Mendes',
         course: 'Engenharia Civil',
-        profilePic: '',
+        profilePic: '/assets/man_avatar_2.png',
         rating: '4.5',
         ridesAsDriver: '8',
         ridesAsPassenger: '19',
@@ -302,6 +302,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         'isWoman': false,
         'carModel': 'Honda Civic',
         'carPlate': 'ABC-1234',
+        'profilePicture': '/assets/man_avatar_3.png'
       },
       2: {
         'name': 'Maria Santos',
@@ -314,6 +315,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         'isWoman': true,
         'carModel': 'Toyota Corolla',
         'carPlate': 'DEF-5678',
+        'profilePicture': '/assets/woman_avatar_3.png'
       },
       3: {
         'name': 'Ana Costa',
@@ -326,6 +328,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
         'isWoman': true,
         'carModel': 'Volkswagen Gol',
         'carPlate': 'GHI-9012',
+        'profilePicture': '/assets/woman_avatar_4.png'
       },
     };
   }
@@ -391,7 +394,7 @@ class RideRepositoryMock implements RideRepositoryProtocol {
             passport: driverInfo['passport'] as String,
             name: driverInfo['name'] as String,
             course: driverInfo['course'] as String,
-            profilePic: '',
+            profilePic: driverInfo['profilePicture'] as String,
             rating: driverInfo['rating'] as String,
             ridesAsDriver: driverInfo['ridesAsDriver'] as String,
             ridesAsPassenger: driverInfo['ridesAsPassenger'] as String,
