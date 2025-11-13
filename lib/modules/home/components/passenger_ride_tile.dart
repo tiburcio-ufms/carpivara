@@ -1,6 +1,5 @@
 import '../../../models/ride.dart';
 import '../../../support/styles/app_colors.dart';
-import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 
 class PassengerRideTile extends StatelessWidget {
@@ -37,21 +36,11 @@ class PassengerRideTile extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  ride.passenger.profilePic.isNotEmpty
-                      ? ride.passenger.profilePic
-                      : Constants.avatar,
+                child: Image.asset(
+                  ride.passenger.profilePic.isNotEmpty ? ride.passenger.profilePic : 'assets/woman_avatar_2.png',
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      Constants.avatar,
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover,
-                    );
-                  },
                 ),
               ),
               Expanded(

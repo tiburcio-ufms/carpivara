@@ -5,7 +5,6 @@ import '../../../models/maps_route_data.dart';
 import '../../../models/ride.dart';
 import '../../../models/user.dart';
 import '../../../support/styles/app_colors.dart';
-import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 
@@ -103,21 +102,13 @@ class LiveView extends View<LiveViewModelProtocol> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.network(
+                                    child: Image.asset(
                                       viewModel.otherUser?.profilePic.isNotEmpty ?? false
                                           ? viewModel.otherUser!.profilePic
-                                          : Constants.avatar,
+                                          : 'assets/man_avatar_1.png',
                                       width: 40,
                                       height: 40,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Image.network(
-                                          Constants.avatar,
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                        );
-                                      },
                                     ),
                                   ),
                                   Expanded(

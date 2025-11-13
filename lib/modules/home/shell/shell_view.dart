@@ -24,7 +24,7 @@ class ShellView extends View<ShellViewModelProtocol> {
               onTap: viewModel.didTapProfile,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
+                child: Image.asset(
                   viewModel.profilePic,
                   width: 32,
                   height: 32,

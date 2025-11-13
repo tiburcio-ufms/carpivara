@@ -1,7 +1,6 @@
 import '../../../models/ride.dart';
 import '../../../models/user.dart';
 import '../../../support/styles/app_colors.dart';
-import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 
@@ -78,19 +77,11 @@ class ReviewView extends View<ReviewViewModelProtocol> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              user.profilePic.isNotEmpty ? user.profilePic : Constants.avatar,
+            child: Image.asset(
+              user.profilePic.isNotEmpty ? user.profilePic : 'assets/man_avatar_1.png',
               width: 64,
               height: 64,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.network(
-                  Constants.avatar,
-                  width: 64,
-                  height: 64,
-                  fit: BoxFit.cover,
-                );
-              },
             ),
           ),
           const SizedBox(width: 16),

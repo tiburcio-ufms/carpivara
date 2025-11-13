@@ -1,6 +1,5 @@
 import '../../../models/user.dart';
 import '../../../support/styles/app_colors.dart';
-import '../../../support/utils/constants.dart';
 import '../../../support/view/view.dart';
 
 class DriverTile extends StatelessWidget {
@@ -22,14 +21,11 @@ class DriverTile extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              driver.profilePic.isNotEmpty ? driver.profilePic : Constants.avatar,
+            child: Image.asset(
+              driver.profilePic.isNotEmpty ? driver.profilePic : 'assets/man_avatar_1.png',
               width: 40,
               height: 40,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.network(Constants.avatar, width: 40, height: 40, fit: BoxFit.cover);
-              },
             ),
           ),
           Expanded(
