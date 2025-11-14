@@ -42,12 +42,15 @@ class ShellView extends View<ShellViewModelProtocol> {
             ),
           ),
         ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            HomeFactory.driver(context),
-            HomeFactory.passenger(context),
-          ],
+        body: SafeArea(
+          top: false,
+          child: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              HomeFactory.driver(context),
+              HomeFactory.passenger(context),
+            ],
+          ),
         ),
       ),
     );
