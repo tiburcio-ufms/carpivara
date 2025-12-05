@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:go_router/go_router.dart';
+
 import '../../../support/view/view.dart';
 import '../../../support/view/view_model.dart';
 import '../components/shell_tab_bar.dart';
@@ -44,11 +48,12 @@ class ShellView extends View<ShellViewModelProtocol> {
         ),
         body: SafeArea(
           top: false,
+          bottom: Platform.isAndroid,
           child: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: [
-              HomeFactory.driver(context),
-              HomeFactory.passenger(context),
+              HomeFactory.driver(context, GoRouterState.of(context)),
+              HomeFactory.passenger(context, GoRouterState.of(context)),
             ],
           ),
         ),

@@ -6,12 +6,20 @@ class DependencyContainer {
   static final GetIt _getIt = GetIt.instance;
   DependencyContainer._();
 
-  Future<void> unregister<T extends Object>(T instance) async {
-    await _getIt.unregister<T>(instance: instance);
+  T getIt<T extends Object>([String? name]) {
+    return _getIt.get<T>(instanceName: name);
   }
 
-  T register<T extends Object>(T instance) {
-    if (_getIt.isRegistered<T>()) return _getIt.get<T>();
-    return _getIt.registerSingleton<T>(instance);
+  bool isRegistered<T extends Object>([String? name]) {
+    return _getIt.isRegistered<T>(instanceName: name);
+  }
+
+  T register<T extends Object>(T instance, [String? name]) {
+    if (isRegistered<T>(name)) return getIt<T>(name);
+    return _getIt.registerSingleton<T>(instance, instanceName: name);
+  }
+
+  Future<void> unregister<T extends Object>(T instance, [String? name]) async {
+    await _getIt.unregister<T>(instance: instance, instanceName: name);
   }
 }

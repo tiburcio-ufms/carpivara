@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
-import '../dependencies/dependency_container.dart';
 import 'view_model.dart';
 
 export 'package:flutter/material.dart';
@@ -38,9 +35,7 @@ class _ViewState extends State<View> {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: widget.viewModel,
-      builder: (_, _) {
-        return widget.build(context);
-      },
+      builder: (_, _) => widget.build(context),
     );
   }
 
@@ -48,7 +43,6 @@ class _ViewState extends State<View> {
   void dispose() {
     widget.dispose();
     widget.viewModel.setContext(null);
-    unawaited(container.unregister(widget.viewModel));
     super.dispose();
   }
 

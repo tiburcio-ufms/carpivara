@@ -11,9 +11,13 @@ class SignInFactory {
   SignInFactory._();
 
   static Widget signIn(BuildContext context, GoRouterState state) {
-    final sessionManager = SessionManager.instance;
-    final sessionRepository = SessionRepositoryMock();
-    final viewModel = SignInViewModel(sessionRepository: sessionRepository, sessionManager: sessionManager);
-    return SignInView(viewModel: container.register(viewModel));
+    if (container.isRegistered<SignInViewModel>(state.fullPath)) {
+      return SignInView(viewModel: container.getIt<SignInViewModel>(state.fullPath));
+    } else {
+      final sessionManager = SessionManager.instance;
+      final sessionRepository = SessionRepositoryMock();
+      final viewModel = SignInViewModel(sessionRepository: sessionRepository, sessionManager: sessionManager);
+      return SignInView(viewModel: container.register(viewModel, state.fullPath));
+    }
   }
 }

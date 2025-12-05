@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+
+import '../dependencies/dependency_container.dart';
 
 typedef RenderDialog = Future<T?> Function<T>(Widget dialog);
 typedef RenderFailure = void Function(String message);
 
 abstract class ViewModel extends ChangeNotifier {
+  String? _name;
   bool? _isLoading;
   BuildContext? _context;
   RenderDialog? _renderDialog;
@@ -20,6 +26,11 @@ abstract class ViewModel extends ChangeNotifier {
   }
 
   void setContext(BuildContext? context) {
+    if (context == null) {
+      unawaited(container.unregister(this, _name));
+    } else {
+      _name = GoRouter.of(context).state.fullPath;
+    }
     _context = context;
     notifyListeners();
   }

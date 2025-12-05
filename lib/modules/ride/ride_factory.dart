@@ -16,29 +16,37 @@ class RideFactory {
   RideFactory._();
 
   static Widget live(BuildContext context, GoRouterState state) {
-    final ride = state.extra as Ride?;
-    final placesService = PlacesService();
-    final sessionManager = SessionManager.instance;
-    final rideRepository = RideRepositoryMock();
-    final placesRepository = PlacesRepository(service: placesService);
-    final viewModel = LiveViewModel(
-      ride: ride,
-      sessionManager: sessionManager,
-      rideRepository: rideRepository,
-      placesRepository: placesRepository,
-    );
-    return LiveView(viewModel: container.register(viewModel));
+    if (container.isRegistered<LiveViewModel>(state.fullPath)) {
+      return LiveView(viewModel: container.getIt<LiveViewModel>(state.fullPath));
+    } else {
+      final ride = state.extra as Ride?;
+      final placesService = PlacesService();
+      final sessionManager = SessionManager.instance;
+      final rideRepository = RideRepositoryMock();
+      final placesRepository = PlacesRepository(service: placesService);
+      final viewModel = LiveViewModel(
+        ride: ride,
+        sessionManager: sessionManager,
+        rideRepository: rideRepository,
+        placesRepository: placesRepository,
+      );
+      return LiveView(viewModel: container.register(viewModel, state.fullPath));
+    }
   }
 
   static Widget review(BuildContext context, GoRouterState state) {
-    final ride = state.extra as Ride?;
-    final sessionManager = SessionManager.instance;
-    final rideRepository = RideRepositoryMock();
-    final viewModel = ReviewViewModel(
-      ride: ride,
-      rideRepository: rideRepository,
-      sessionManager: sessionManager,
-    );
-    return ReviewView(viewModel: container.register(viewModel));
+    if (container.isRegistered<ReviewViewModel>(state.fullPath)) {
+      return ReviewView(viewModel: container.getIt<ReviewViewModel>(state.fullPath));
+    } else {
+      final ride = state.extra as Ride?;
+      final sessionManager = SessionManager.instance;
+      final rideRepository = RideRepositoryMock();
+      final viewModel = ReviewViewModel(
+        ride: ride,
+        rideRepository: rideRepository,
+        sessionManager: sessionManager,
+      );
+      return ReviewView(viewModel: container.register(viewModel, state.fullPath));
+    }
   }
 }
