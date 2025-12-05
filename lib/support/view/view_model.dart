@@ -1,0 +1,47 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
+
+import '../dependencies/dependency_container.dart';
+
+typedef RenderDialog = Future<T?> Function<T>(Widget dialog);
+typedef RenderFailure = void Function(String message);
+
+abstract class ViewModel extends ChangeNotifier {
+  String? _name;
+  bool? _isLoading;
+  BuildContext? _context;
+  RenderDialog? _renderDialog;
+  RenderFailure? _renderFailure;
+
+  bool get isLoading => _isLoading ?? false;
+  BuildContext? get context => _context;
+  RenderDialog? get renderDialog => _renderDialog;
+  RenderFailure? get renderFailure => _renderFailure;
+
+  void setIsLoading(bool isLoading) {
+    _isLoading = isLoading;
+    notifyListeners();
+  }
+
+  void setContext(BuildContext? context) {
+    if (context == null) {
+      unawaited(container.unregister(this, _name));
+    } else {
+      _name = GoRouter.of(context).state.fullPath;
+    }
+    _context = context;
+    notifyListeners();
+  }
+
+  void setRenderDialog(RenderDialog renderDialog) {
+    _renderDialog = renderDialog;
+    notifyListeners();
+  }
+
+  void setRenderFailure(void Function(String message) renderFailure) {
+    _renderFailure = renderFailure;
+    notifyListeners();
+  }
+}
